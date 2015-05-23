@@ -5,6 +5,11 @@
   module.exports = function(app) {
     app.get('/friends', function(req, res) {
     	friends.show(req, res);
-    	// friends.add("Rupert", 48);
+    });
+    app.post('/friends', function(req, res){
+    	friends.add(req, res);
+    });
+    app.post('/destroy', function(req, res){
+        friends.destroy(req, res);
     });
   }

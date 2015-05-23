@@ -14,10 +14,16 @@
                     callback(friends);
                 });
             }
-            factory.addFriend = function(info, callback){
-                $http.post('/friends'), {name: info.name, age: info.age}.success(function(output){
-                    friends = output;
-                    callback(friends);
+            factory.addFriend = function(friend, callback){
+                console.log('Friend ', friend);
+                $http.post('/friends', friend).success(function(data){
+                    callback(data);
+                });
+            }
+            factory.destroyFriend = function(id, callback){
+                console.log('id to be removed: ', id);
+                $http.post('/destroy', {id: id}).success(function(data){
+                    callback(data);
                 });
             }
             return factory;
@@ -28,10 +34,17 @@
                 $scope.friends = data;
             });
             $scope.addfriend = function(){
-                FriendFactory.addFriend($scope.new_friend, function(){
-                    
+                console.log($scope.new_friend);
+                FriendFactory.addFriend($scope.new_friend, function(res){
+                    $scope.friends = res;
                 });
-          
+                $scope.new_friend = {};
+            }
+            $scope.destroyfriend = function(id){
+                console.log(id);
+                FriendFactory.destroyFriend(id, function(res){
+                    $scope.friends = res;
+                });
             }
         });
     </script>
@@ -42,12 +55,14 @@
     {{filter_name}}
     <ul>
         <li ng-repeat="friend in friends | filter: filter_name">
-            {{friend.name}}, {{friend.age}}
+            {{friend.name}}, {{friend.age}} <button ng-click="destroyfriend(friend._id)">Remove Friend</button>
         </li>
     </ul>
     <h1>Add a Friend</h1>
-    <input type="text" ng-model="new_friend.name" placeholder="name">
-    <input type="text" ng-model="new_friend.age" placeholder="age">
-    <input type="submit" ng-click="addfriend()">
+    <form>
+        <input type="text" ng-model="new_friend.name" placeholder="name">
+        <input type="text" ng-model="new_friend.age" placeholder="age">
+        <input type="submit" ng-click="addfriend()">
+    </form>
 </body>
 </html>

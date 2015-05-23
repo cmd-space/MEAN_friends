@@ -14,13 +14,34 @@ module.exports = (function(){
                 }
             });
         },
-        add: function(name, age){
-            var monfriend = new Friend({name: name, age: age});
+        add: function(req, res){
+            var monfriend = new Friend({name: req.body.name, age: req.body.age});
             monfriend.save(function(err, results){
                 if(err){
                     console.log(err);
                 } else{
-                    console.log(results);
+                    Friend.find({}, function(err, results){
+                        if(err){
+                            console.log(err);
+                        } else{
+                            res.json(results);
+                        }
+                    });
+                }
+            });
+        },
+        destroy: function(req, res){
+            Friend.remove({_id: req.body.id}, function(err, results){
+                if(err){
+                    console.log(err);
+                } else{
+                    Friend.find({}, function(err, results){
+                        if(err){
+                            console.log(err);
+                        } else{
+                            res.json(results);
+                        }
+                    });
                 }
             });
         }
